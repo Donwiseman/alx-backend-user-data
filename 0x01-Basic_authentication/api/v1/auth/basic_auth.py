@@ -5,6 +5,7 @@ Basic Authentication class for the API
 
 from api.v1.auth.auth import Auth
 import base64
+from typing import TypeVar
 
 
 class BasicAuth(Auth):
@@ -39,3 +40,15 @@ class BasicAuth(Auth):
                 ':' not in decoded_base64_authorization_header:
             return (None, None)
         return decoded_base64_authorization_header.split(':')
+
+    def user_object_from_credentials(self, user_email: str, user_pwd: str
+                                     ) -> TypeVar('User'):
+        """Returns the user object matching the credentials."""
+        from models.user import User
+        if not user_email or not user_pwd:
+            return None
+        search_results = User.search({'email': user_email})
+        for obj in search_results:
+            if obj.is_valid_password(user_pwd):
+                return obj
+        return None
