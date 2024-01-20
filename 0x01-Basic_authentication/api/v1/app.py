@@ -15,9 +15,14 @@ CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 auth = None
 excluded_paths = ['/api/v1/status/', '/api/v1/unauthorized/',
                   '/api/v1/forbidden/']
-if getenv("AUTH_TYPE", None):
+auth_type = getenv("AUTH_TYPE", None)
+if auth_type:
     from api.v1.auth.auth import Auth
-    auth = Auth()
+    from api.v1.auth.basic_auth import BasicAuth
+    if auth_type == 'basic_auth':
+        auth = BasicAuth()
+    else:
+        auth = Auth()
 
 
 @app.errorhandler(404)
