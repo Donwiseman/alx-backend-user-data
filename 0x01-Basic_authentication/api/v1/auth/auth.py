@@ -12,8 +12,20 @@ class Auth():
     Base class definition for the API authentication.
     """
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """Check i the path requires authentication"""
-        return False
+        """Check if the path requires authentication"""
+        if not path or not excluded_paths:
+            return True
+        if path[(len(path) - 1)] == '/':
+            if path in excluded_paths:
+                return False
+            elif path[:-1] in excluded_paths:
+                return False
+        else:
+            if path in excluded_paths:
+                return False
+            elif (path + '/') in excluded_paths:
+                return False
+        return True
 
     def authorization_header(self, request=None) -> str:
         """Check if the authorization object is present."""
