@@ -47,7 +47,11 @@ class BasicAuth(Auth):
         from models.user import User
         if not user_email or not user_pwd:
             return None
+        if type(user_email) is not str or type(user_pwd) is not str:
+            return None
         search_results = User.search({'email': user_email})
+        if not search_results:
+            return None
         for obj in search_results:
             if obj.is_valid_password(user_pwd):
                 return obj
