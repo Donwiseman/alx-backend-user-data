@@ -43,7 +43,8 @@ class DB:
 
     def find_user_by(self, **kwargs: str) -> User:
         """ Finds User with passed characteristics."""
-        arg_list = ["email", "hashed_password", "session_id", "reset_token"]
+        arg_list = ["id", "email", "hashed_password", "session_id",
+                    "reset_token"]
         if kwargs:
             for key, value in kwargs.items():
                 if key in arg_list:
@@ -52,3 +53,17 @@ class DB:
                             return user
                     raise NoResultFound
             raise InvalidRequestError
+
+    def update_user(self, user_id: int, **kwargs: str) -> None:
+        """Updates a given user details."""
+        arg_list = ["id", "email", "hashed_password", "session_id",
+                    "reset_token"]
+        if type(user_id) is not int:
+            raise ValueError
+        user = self.find_user_by(id=user_id)
+        for attr, value in kwargs.items():
+            if attr not in arg_list:
+                raise ValueError
+            setattr(user, attr, value)
+        self._session.add(user)
+        self._session.commit()
