@@ -35,7 +35,7 @@ class Auth:
             hashed_passwd = _hash_password(password)
             return self._db.add_user(email, hashed_passwd)
 
-    def valid_login(self,  email: str, password: str) -> bool:
+    def valid_login(self, email: str, password: str) -> bool:
         """Validates a password login."""
         try:
             user = self._db.find_user_by(email=email)
@@ -51,5 +51,22 @@ class Auth:
             session_id = _generate_uuid()
             self._db.update_user(user.id, session_id=session_id)
             return session_id
+        except InvalidRequestError or NoResultFound or ValueError:
+            return None
+
+    def get_user_from_session_id(self, session_id: str) -> User:
+        """Returns the user with given session id."""
+        if not session_id:
+            return None
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+            return user
+        except InvalidRequestError or NoResultFound or ValueError:
+            return None
+
+    def destroy_session(self, user_id: int) -> None:
+        """ Destroys a user session token."""
+        try:
+            self._db.update_user(user.id, session_id=None)
         except InvalidRequestError or NoResultFound or ValueError:
             return None
