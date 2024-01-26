@@ -41,7 +41,7 @@ class DB:
         self._session.commit()
         return new_user
 
-    def find_user_by(self, **kwargs: str) -> User:
+    def find_user_by(self, **kwargs) -> User:
         """ Finds User with passed characteristics."""
         arg_list = ["id", "email", "hashed_password", "session_id",
                     "reset_token"]
@@ -54,7 +54,7 @@ class DB:
                     raise NoResultFound
             raise InvalidRequestError
 
-    def update_user(self, user_id: int, **kwargs: str) -> None:
+    def update_user(self, user_id: int, **kwargs) -> None:
         """Updates a given user details."""
         arg_list = ["id", "email", "hashed_password", "session_id",
                     "reset_token"]
