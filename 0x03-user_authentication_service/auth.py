@@ -8,10 +8,10 @@ from sqlalchemy.orm.exc import NoResultFound
 import uuid
 
 
-def _hash_password(passwd: str) -> bytes:
+def _hash_password(password: str) -> bytes:
     """Hashes a given password."""
     salt = gensalt()
-    encoded_pw = passwd.encode('utf-8')
+    encoded_pw = password.encode('utf-8')
     return hashpw(encoded_pw, salt)
 
 
